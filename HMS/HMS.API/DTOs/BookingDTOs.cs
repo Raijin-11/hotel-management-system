@@ -1,4 +1,6 @@
-﻿namespace HMS.API.DTOs
+﻿// Author: Ahmed Shaain Firaq | S2401269
+
+namespace HMS.API.DTOs
 {
     public class CreateBookingDTO
     {

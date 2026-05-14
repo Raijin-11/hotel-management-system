@@ -1,4 +1,6 @@
-﻿using HMS.API.Models;
+﻿// Author: Ahmed Shaain Firaq | S2401269
+
+using HMS.API.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace HMS.API.Data

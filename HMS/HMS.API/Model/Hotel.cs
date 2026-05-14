@@ -1,4 +1,6 @@
-﻿namespace HMS.API.Models
+﻿// Author: Ahmed Shaain Firaq | S2401269
+
+namespace HMS.API.Models
 {
     public class Hotel
     {
