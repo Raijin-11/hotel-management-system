@@ -103,4 +103,4 @@ Frontend runs at `http://localhost:4200`
 | Name | Student ID | Role |
 |------|------------|------|
 | Ahmed Shaain Firaq| S2401269 | Person 1 — Backend + UML |
-| [Person 2 Name] | [Person 2 ID] | Person 2 — Frontend + Testing |
+| Abdulla Mumin Mohamed | S2401551 | Person 2 — Frontend + Testing |
