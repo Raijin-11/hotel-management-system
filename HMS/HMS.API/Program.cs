@@ -57,7 +57,7 @@ builder.Services.AddCors(options =>
 // Services
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<RoomService>();
-builder.Services.AddScoped<HMS.API.Services.BookingService>();  
+builder.Services.AddScoped<HMS.API.Services.BookingService>();
 builder.Services.AddScoped<PaymentService>();
 builder.Services.AddScoped<ReportService>();
 builder.Services.AddScoped<AuditService>();
@@ -110,11 +110,13 @@ using (var scope = app.Services.CreateScope())
 
 if (app.Environment.IsDevelopment())
 {
+    // Always show Swagger for demo purposes
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+if (app.Environment.IsDevelopment())
+    app.UseHttpsRedirection();
 app.UseCors("AllowAngular");
 
 // Custom middleware

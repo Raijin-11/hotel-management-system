@@ -92,7 +92,7 @@ import { Booking, Room, DashboardStats } from '../../models/models';
                           *ngIf="b.status === 'Confirmed'" [disabled]="processing === b.id">
                     {{ processing === b.id ? '...' : 'Check In' }}
                   </button>
-                  <span class="text-success" *ngIf="b.status === 'CheckedIn'">✓ Checked In</span>
+                  <span class="text-success" *ngIf="b.status === 'CheckedIn'">Checked In</span>
                 </td>
               </tr>
             </tbody>
@@ -134,7 +134,7 @@ import { Booking, Room, DashboardStats } from '../../models/models';
                           *ngIf="b.status === 'CheckedIn'" [disabled]="processing === b.id">
                     {{ processing === b.id ? '...' : 'Check Out' }}
                   </button>
-                  <span class="text-muted" *ngIf="b.status === 'CheckedOut'">✓ Done</span>
+                  <span class="text-muted" *ngIf="b.status === 'CheckedOut'">Done</span>
                 </td>
               </tr>
             </tbody>

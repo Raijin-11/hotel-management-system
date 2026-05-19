@@ -66,12 +66,39 @@ Navigate to `https://localhost:7172/swagger` to see all endpoints.
 ## Frontend Setup (Person 2)
 
 ```bash
-cd frontend
+cd hms-frontend
 npm install
 ng serve
 ```
 
 Frontend runs at `http://localhost:4200`
+
+## Docker Setup (Recommended)
+
+Run the entire system with one command using Docker:
+
+### Prerequisites
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+
+### Run with Docker
+```bash
+docker-compose up --build
+```
+
+This will automatically:
+- Start PostgreSQL database
+- Run all migrations
+- Seed all test data
+- Start the backend API at http://localhost:7172
+- Start the frontend at http://localhost:4200
+
+### Stop Docker
+```bash
+docker-compose down
+```
+
+### Swagger API Docs (Docker)
+Navigate to `http://localhost:7172/swagger`
 
 ## Seeded Test Accounts
 

@@ -25,6 +25,14 @@ namespace HMS.API.Services
             if (room == null || room.Status != "Available")
                 return null;
 
+            var hasOverlap = await _context.Bookings.AnyAsync(b =>
+                b.RoomId == roomId &&
+                b.Status != "Cancelled" &&
+                b.CheckInDate < checkOut &&
+                b.CheckOutDate > checkIn);
+
+            if (hasOverlap) return null;
+
             var nights = (checkOut - checkIn).Days;
             if (nights <= 0) return null;
 

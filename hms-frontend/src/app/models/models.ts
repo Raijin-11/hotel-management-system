@@ -93,6 +93,7 @@ export interface DashboardStats {
 }
 
 export interface AuditLog {
+userName: string;
   id: number;
   userId?: number;
   userEmail?: string;

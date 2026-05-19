@@ -46,7 +46,7 @@ namespace HMS.API.Middleware
                     var jwtToken = (JwtSecurityToken)validatedToken;
                     var expiry = jwtToken.ValidTo;
 
-                    // Token expires in less than 0 minutes = expired
+                    // Token has expired
                     if (expiry < DateTime.UtcNow)
                     {
                         context.Response.StatusCode = 401;

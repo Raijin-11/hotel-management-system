@@ -76,7 +76,6 @@ import { AuthResponse } from '../../models/models';
       gap: 10px;
       text-decoration: none;
     }
-    .brand-icon { font-size: 14px; font-weight: 700; color: var(--accent); letter-spacing: 0.05em; }
     .brand-name {
       font-family: var(--font-heading);
       font-size: 20px;

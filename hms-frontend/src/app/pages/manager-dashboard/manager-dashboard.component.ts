@@ -79,15 +79,15 @@ import { DashboardStats } from '../../models/models';
           <div class="report-stats grid-3" style="margin:20px 0">
             <div class="report-stat">
               <div class="rs-label">Total Room-Nights Available</div>
-              <div class="rs-value">{{ occupancyData.totalRoomNights || 'N/A' }}</div>
+              <div class="rs-value">{{ occupancyData.totalRooms }}</div>
             </div>
             <div class="report-stat">
               <div class="rs-label">Occupied Room-Nights</div>
-              <div class="rs-value">{{ occupancyData.occupiedNights || 'N/A' }}</div>
+              <div class="rs-value">{{ occupancyData.occupiedBookings }}</div>
             </div>
             <div class="report-stat">
               <div class="rs-label">Occupancy Rate</div>
-              <div class="rs-value accent">{{ occupancyData.occupancyRate || stats?.occupancyRate }}%</div>
+              <<div class="rs-value accent">{{ occupancyData.occupancyRate }}%</div>
             </div>
           </div>
           <div class="table-container" *ngIf="occupancyData.bookings?.length > 0">

@@ -42,7 +42,7 @@ import { AuditLog } from '../../models/models';
                 <td>
                   <span class="badge" [ngClass]="getActionClass(log.action)">{{ log.action }}</span>
                 </td>
-                <td>{{ log.userEmail || 'System' }}</td>
+                <td>{{ log.userName || 'System' }}</td>
                 <td class="details-cell">{{ log.details }}</td>
                 <td><span class="font-mono ip">{{ log.ipAddress }}</span></td>
                 <td>{{ log.timestamp | date:'dd MMM yyyy HH:mm' }}</td>

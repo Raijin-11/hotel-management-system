@@ -10,11 +10,6 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
-  // Hotels
-  getHotels(): Observable<Hotel[]> {
-    return this.http.get<Hotel[]>(`${this.baseUrl}/Room/hotels`);
-  }
-
   // Rooms
   searchRooms(params: RoomSearchParams): Observable<Room[]> {
     let httpParams = new HttpParams();
@@ -97,8 +92,4 @@ export class ApiService {
     return this.http.get<AuditLog[]>(`${this.baseUrl}/Audit`);
   }
 
-  // Ancillary Services
-  getServices(): Observable<AncillaryService[]> {
-    return this.http.get<AncillaryService[]>(`${this.baseUrl}/Room/services`);
-  }
 }
