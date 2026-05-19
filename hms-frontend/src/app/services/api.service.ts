@@ -6,7 +6,7 @@ import { Room, Booking, CreateBookingRequest, DashboardStats, AuditLog, Hotel, A
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
-  private baseUrl = 'https://localhost:7172/api';
+  private baseUrl = 'http://localhost:7172/api';
 
   constructor(private http: HttpClient) {}
 
