@@ -105,5 +105,9 @@ namespace HMS.API.Data
                 .Property(bs => bs.TotalFee)
                 .HasPrecision(10, 2);
         }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+        }
     }
 }

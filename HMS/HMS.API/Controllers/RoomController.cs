@@ -27,17 +27,20 @@ namespace HMS.API.Controllers
 
             var result = rooms.Select(r => new
             {
-                r.Id,
-                r.RoomNumber,
-                r.RoomType,
-                r.Capacity,
-                r.Status,
-                r.Description,
-                r.ImageUrl,
-                HotelName = r.Hotel.Name,
-                HotelLocation = r.Hotel.Location,
-                PricePerNight = _roomService.GetPricePerNight(r, dto.CheckInDate),
-                IsPeakSeason = _roomService.IsPeakSeason(dto.CheckInDate)
+                id = r.Id,
+                hotelId = r.HotelId,
+                roomNumber = r.RoomNumber,
+                roomType = r.RoomType,
+                capacity = r.Capacity,
+                status = r.Status,
+                description = r.Description,
+                imageUrl = r.ImageUrl,
+                hotelName = r.Hotel.Name,
+                hotelLocation = r.Hotel.Location,
+                pricePerNightOffPeak = r.PricePerNightOffPeak,
+                pricePerNightPeak = r.PricePerNightPeak,
+                pricePerNight = _roomService.GetPricePerNight(r, dto.CheckInDate),
+                isPeakSeason = _roomService.IsPeakSeason(dto.CheckInDate)
             });
 
             return Ok(result);
