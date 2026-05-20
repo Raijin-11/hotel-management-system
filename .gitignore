@@ -1,0 +1,10 @@
+# Build outputs
+**/bin/
+**/obj/
+**/dist/
+**/.angular/
+**/node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db

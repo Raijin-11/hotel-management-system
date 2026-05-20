@@ -1,0 +1,79 @@
+================================================================
+Hotel Management System (HMS) - Setup Instructions
+Group Members:
+  Person 1: Ahmed Shaain Firaq | S2401269
+  Person 2: Abdulla Mumin Mohamed | S2401551
+================================================================
+
+PREREQUISITES
+-------------
+- Docker Desktop (recommended)
+- Visual Studio 2022
+- .NET 9 SDK
+- Node.js 22+
+- Angular CLI 21
+- PostgreSQL 17
+- pgAdmin 4
+
+DOCKER SETUP (RECOMMENDED)
+---------------------------
+1. Install Docker Desktop
+2. Extract source-code.zip and open terminal in the project root folder
+3. Run: docker-compose up --build
+4. Wait for all 3 containers to start (db, backend, frontend)
+5. Frontend runs at: http://localhost:4200
+6. Backend API at: http://localhost:7172
+7. Swagger UI at: http://localhost:7172/swagger
+
+Note: Migrations and seed data run automatically on startup.
+To stop: docker-compose down
+
+BACKEND SETUP (Manual - without Docker)
+----------------------------------------
+1. Extract source-code.zip and navigate to the HMS folder
+2. Install PostgreSQL 17 and create a database:
+   Database name: HotelManagementDB
+   Username: postgres
+   Password: postgres123
+3. Restore the database dump:
+   - Open pgAdmin
+   - Right-click HotelManagementDB -> Restore
+   - Select HotelManagementDB.sql
+   - Click Restore
+   OR let the application auto-seed on first run (see step 5)
+4. Update connection string if needed:
+   File: HMS/HMS.API/appsettings.json
+   "DefaultConnection": "Host=localhost;Port=5432;
+   Database=HotelManagementDB;Username=postgres;Password=postgres123"
+5. Open HMS/HMS.sln in Visual Studio 2022
+6. Press F5 to run
+   - Migrations run automatically on startup
+   - Seed data populates automatically on first run
+   - API starts at: http://localhost:7172
+   - Swagger UI at: http://localhost:7172/swagger
+
+FRONTEND SETUP (Manual - without Docker)
+-----------------------------------------
+1. Extract source-code.zip and open terminal in the hms-frontend/ folder
+2. Run: npm install
+3. Run: ng serve
+4. Frontend runs at: http://localhost:4200
+
+TEST ACCOUNTS
+-------------
+Role     | Email               | Password
+---------|---------------------|----------
+Admin    | admin@hms.com       | Admin@123
+Manager  | manager@hms.com     | Manager@123
+Staff    | staff@hms.com       | Staff@123
+Guest    | guest@hms.com       | Guest@123
+
+SEEDED DATA
+-----------
+Hotels:
+- The Grand London (London, UK)
+- Paris Elite (Paris, France)
+
+Rooms: 10 rooms per hotel (Standard, Deluxe, Family Suite, Penthouse)
+
+================================================================
