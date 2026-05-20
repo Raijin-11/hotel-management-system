@@ -45,6 +45,8 @@ namespace HMS.API.Controllers
             var result = bookings.Select(b => new BookingResponseDTO
             {
                 Id = b.Id,
+                UserId = b.UserId,
+                GuestName = b.User.FullName,
                 RoomId = b.RoomId,
                 RoomNumber = b.Room.RoomNumber,
                 RoomType = b.Room.RoomType,
@@ -83,7 +85,26 @@ namespace HMS.API.Controllers
         public async Task<IActionResult> GetAll()
         {
             var bookings = await _bookingService.GetAllBookingsAsync();
-            return Ok(bookings);
+            var result = bookings.Select(b => new BookingResponseDTO
+            {
+                Id = b.Id,
+                UserId = b.UserId,
+                GuestName = b.User.FullName,
+                RoomId = b.RoomId,
+                RoomNumber = b.Room.RoomNumber,
+                RoomType = b.Room.RoomType,
+                HotelName = b.Room.Hotel.Name,
+                HotelLocation = b.Room.Hotel.Location,
+                CheckInDate = b.CheckInDate,
+                CheckOutDate = b.CheckOutDate,
+                NumberOfGuests = b.NumberOfGuests,
+                TotalPrice = b.TotalPrice,
+                CancellationFee = b.CancellationFee,
+                Status = b.Status,
+                BookedAt = b.BookedAt,
+                SpecialRequests = b.SpecialRequests
+            });
+            return Ok(result);
         }
 
         [HttpPost("{id}/checkin")]
@@ -109,7 +130,26 @@ namespace HMS.API.Controllers
         public async Task<IActionResult> TodayArrivals()
         {
             var arrivals = await _bookingService.GetTodayArrivalsAsync();
-            return Ok(arrivals);
+            var result = arrivals.Select(b => new BookingResponseDTO
+            {
+                Id = b.Id,
+                UserId = b.UserId,
+                GuestName = b.User.FullName,
+                RoomId = b.RoomId,
+                RoomNumber = b.Room.RoomNumber,
+                RoomType = b.Room.RoomType,
+                HotelName = b.Room.Hotel.Name,
+                HotelLocation = b.Room.Hotel.Location,
+                CheckInDate = b.CheckInDate,
+                CheckOutDate = b.CheckOutDate,
+                NumberOfGuests = b.NumberOfGuests,
+                TotalPrice = b.TotalPrice,
+                CancellationFee = b.CancellationFee,
+                Status = b.Status,
+                BookedAt = b.BookedAt,
+                SpecialRequests = b.SpecialRequests
+            });
+            return Ok(result);
         }
 
         [HttpGet("departures/today")]
@@ -117,7 +157,53 @@ namespace HMS.API.Controllers
         public async Task<IActionResult> TodayDepartures()
         {
             var departures = await _bookingService.GetTodayDeparturesAsync();
-            return Ok(departures);
+            var result = departures.Select(b => new BookingResponseDTO
+            {
+                Id = b.Id,
+                UserId = b.UserId,
+                GuestName = b.User.FullName,
+                RoomId = b.RoomId,
+                RoomNumber = b.Room.RoomNumber,
+                RoomType = b.Room.RoomType,
+                HotelName = b.Room.Hotel.Name,
+                HotelLocation = b.Room.Hotel.Location,
+                CheckInDate = b.CheckInDate,
+                CheckOutDate = b.CheckOutDate,
+                NumberOfGuests = b.NumberOfGuests,
+                TotalPrice = b.TotalPrice,
+                CancellationFee = b.CancellationFee,
+                Status = b.Status,
+                BookedAt = b.BookedAt,
+                SpecialRequests = b.SpecialRequests
+            });
+            return Ok(result);
+        }
+
+        [HttpGet("currently-staying")]
+        [Authorize(Roles = "Staff,Manager,Admin")]
+        public async Task<IActionResult> CurrentlyStaying()
+        {
+            var staying = await _bookingService.GetCurrentlyStayingAsync();
+            var result = staying.Select(b => new BookingResponseDTO
+            {
+                Id = b.Id,
+                UserId = b.UserId,
+                GuestName = b.User.FullName,
+                RoomId = b.RoomId,
+                RoomNumber = b.Room.RoomNumber,
+                RoomType = b.Room.RoomType,
+                HotelName = b.Room.Hotel.Name,
+                HotelLocation = b.Room.Hotel.Location,
+                CheckInDate = b.CheckInDate,
+                CheckOutDate = b.CheckOutDate,
+                NumberOfGuests = b.NumberOfGuests,
+                TotalPrice = b.TotalPrice,
+                CancellationFee = b.CancellationFee,
+                Status = b.Status,
+                BookedAt = b.BookedAt,
+                SpecialRequests = b.SpecialRequests
+            });
+            return Ok(result);
         }
 
         [HttpPost("payment")]

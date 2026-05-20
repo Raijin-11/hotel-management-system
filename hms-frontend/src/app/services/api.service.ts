@@ -70,6 +70,10 @@ export class ApiService {
     return this.http.get<Booking[]>(`${this.baseUrl}/Booking/departures/today`);
   }
 
+  getCurrentlyStaying(): Observable<Booking[]> {
+    return this.http.get<Booking[]>(`${this.baseUrl}/Booking/currently-staying`);
+  }
+
   processPayment(bookingId: number, amount: number, paymentMethod: string): Observable<any> {
     return this.http.post(`${this.baseUrl}/Booking/payment`, { bookingId, amount, paymentMethod });
   }

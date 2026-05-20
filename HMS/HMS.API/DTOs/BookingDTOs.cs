@@ -14,6 +14,8 @@ namespace HMS.API.DTOs
     public class BookingResponseDTO
     {
         public int Id { get; set; }
+        public int UserId { get; set; }
+        public string GuestName { get; set; } = string.Empty;
         public int RoomId { get; set; }
         public string RoomNumber { get; set; } = string.Empty;
         public string RoomType { get; set; } = string.Empty;

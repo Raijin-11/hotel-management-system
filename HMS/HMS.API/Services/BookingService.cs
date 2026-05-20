@@ -128,6 +128,7 @@ namespace HMS.API.Services
         public async Task<List<Booking>> GetUserBookingsAsync(int userId)
         {
             return await _context.Bookings
+                .Include(b => b.User)
                 .Include(b => b.Room)
                 .ThenInclude(r => r.Hotel)
                 .Include(b => b.BookingServices)
@@ -200,7 +201,7 @@ namespace HMS.API.Services
             var today = DateTime.UtcNow.Date;
             return await _context.Bookings
                 .Include(b => b.User)
-                .Include(b => b.Room)
+                .Include(b => b.Room).ThenInclude(r => r.Hotel)
                 .Where(b => b.CheckInDate.Date == today && b.Status == "Confirmed")
                 .ToListAsync();
         }
@@ -210,8 +211,17 @@ namespace HMS.API.Services
             var today = DateTime.UtcNow.Date;
             return await _context.Bookings
                 .Include(b => b.User)
-                .Include(b => b.Room)
+                .Include(b => b.Room).ThenInclude(r => r.Hotel)
                 .Where(b => b.CheckOutDate.Date == today && b.Status == "CheckedIn")
+                .ToListAsync();
+        }
+
+        public async Task<List<Booking>> GetCurrentlyStayingAsync()
+        {
+            return await _context.Bookings
+                .Include(b => b.User)
+                .Include(b => b.Room).ThenInclude(r => r.Hotel)
+                .Where(b => b.Status == "CheckedIn")
                 .ToListAsync();
         }
     }

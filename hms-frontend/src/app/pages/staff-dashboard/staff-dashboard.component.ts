@@ -45,6 +45,9 @@ import { Booking, Room, DashboardStats } from '../../models/models';
         <button class="tab" [class.active]="activeTab === 'arrivals'" (click)="activeTab = 'arrivals'">
           Today's Arrivals ({{ arrivals.length }})
         </button>
+        <button class="tab" [class.active]="activeTab === 'staying'" (click)="activeTab = 'staying'">
+          Currently Staying ({{ currentlyStaying.length }})
+        </button>
         <button class="tab" [class.active]="activeTab === 'departures'" (click)="activeTab = 'departures'">
           Today's Departures ({{ departures.length }})
         </button>
@@ -93,6 +96,49 @@ import { Booking, Room, DashboardStats } from '../../models/models';
                     {{ processing === b.id ? '...' : 'Check In' }}
                   </button>
                   <span class="text-success" *ngIf="b.status === 'CheckedIn'">Checked In</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Currently Staying Tab -->
+      <div *ngIf="activeTab === 'staying'">
+        <div class="alert alert-success" *ngIf="actionSuccess">{{ actionSuccess }}</div>
+        <div class="alert alert-error" *ngIf="actionError">{{ actionError }}</div>
+        <div class="empty-state" *ngIf="currentlyStaying.length === 0">
+          <h3>No guests currently staying</h3>
+          <p>All guests have checked out</p>
+        </div>
+        <div class="table-container" *ngIf="currentlyStaying.length > 0">
+          <table>
+            <thead>
+              <tr>
+                <th>Booking #</th>
+                <th>Guest</th>
+                <th>Room</th>
+                <th>Check-in</th>
+                <th>Check-out</th>
+                <th>Guests</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let b of currentlyStaying">
+                <td><span class="font-mono">#{{ b.id }}</span></td>
+                <td>{{ b.guestName || 'Guest' }}</td>
+                <td>Room {{ b.roomNumber }} — {{ b.roomType }}</td>
+                <td>{{ b.checkInDate | date:'dd MMM' }}</td>
+                <td>{{ b.checkOutDate | date:'dd MMM' }}</td>
+                <td>{{ b.numberOfGuests }}</td>
+                <td><span class="badge" [ngClass]="getStatusClass(b.status)">{{ b.status }}</span></td>
+                <td>
+                  <button class="btn btn-primary btn-sm" (click)="checkOut(b)"
+                          [disabled]="processing === b.id">
+                    {{ processing === b.id ? '...' : 'Check Out' }}
+                  </button>
                 </td>
               </tr>
             </tbody>
@@ -238,6 +284,7 @@ import { Booking, Room, DashboardStats } from '../../models/models';
 export class StaffDashboardComponent implements OnInit {
   activeTab = 'arrivals';
   arrivals: Booking[] = [];
+  currentlyStaying: Booking[] = [];
   departures: Booking[] = [];
   allBookings: Booking[] = [];
   rooms: Room[] = [];
@@ -255,6 +302,7 @@ export class StaffDashboardComponent implements OnInit {
   loadData() {
     this.apiService.getDashboardStats().subscribe(s => this.stats = s);
     this.apiService.getTodayArrivals().subscribe(a => this.arrivals = a);
+    this.apiService.getCurrentlyStaying().subscribe(s => this.currentlyStaying = s);
     this.apiService.getTodayDepartures().subscribe(d => this.departures = d);
     this.apiService.getAllBookings().subscribe(b => this.allBookings = b);
     this.apiService.getAllRooms().subscribe(r => this.rooms = r);
