@@ -21,42 +21,61 @@ namespace HMS.API.Services
 
         public async Task<Booking?> CreateBookingAsync(int userId, int roomId, DateTime checkIn, DateTime checkOut, int guests, string specialRequests)
         {
+            // Check room exists and is bookable
             var room = await _roomService.GetRoomByIdAsync(roomId);
-            if (room == null || room.Status != "Available")
+            if (room == null || room.Status == "OutOfService")
                 return null;
-
-            var hasOverlap = await _context.Bookings.AnyAsync(b =>
-                b.RoomId == roomId &&
-                b.Status != "Cancelled" &&
-                b.CheckInDate < checkOut &&
-                b.CheckOutDate > checkIn);
-
-            if (hasOverlap) return null;
 
             var nights = (checkOut - checkIn).Days;
             if (nights <= 0) return null;
 
-            var pricePerNight = _roomService.GetPricePerNight(room, checkIn);
-            var totalPrice = pricePerNight * nights;
+            // Use serializable transaction to prevent race-condition double-booking
+            using var transaction = await _context.Database
+                .BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
 
-            var booking = new Booking
+            try
             {
-                UserId = userId,
-                RoomId = roomId,
-                CheckInDate = checkIn,
-                CheckOutDate = checkOut,
-                NumberOfGuests = guests,
-                TotalPrice = totalPrice,
-                Status = "Confirmed",
-                SpecialRequests = specialRequests,
-                BookedAt = DateTime.UtcNow
-            };
+                // Re-fetch room within the transaction so we see the latest state
+                var roomCheck = await _context.Rooms.FindAsync(roomId);
+                if (roomCheck == null || roomCheck.Status == "OutOfService")
+                    return null;
 
-            _context.Bookings.Add(booking);
-            await _context.SaveChangesAsync();
-            await _auditService.LogAsync(userId, "Booking", $"Booking created for room {roomId}, check-in {checkIn:yyyy-MM-dd}");
+                var hasOverlap = await _context.Bookings.AnyAsync(b =>
+                    b.RoomId == roomId &&
+                    b.Status != "Cancelled" &&
+                    b.CheckInDate < checkOut &&
+                    b.CheckOutDate > checkIn);
 
-            return booking;
+                if (hasOverlap) return null;
+
+                var totalPrice = _roomService.CalculateTotalPrice(room, checkIn, checkOut);
+
+                var booking = new Booking
+                {
+                    UserId = userId,
+                    RoomId = roomId,
+                    CheckInDate = checkIn,
+                    CheckOutDate = checkOut,
+                    NumberOfGuests = guests,
+                    TotalPrice = totalPrice,
+                    Status = "Confirmed",
+                    SpecialRequests = specialRequests,
+                    BookedAt = DateTime.UtcNow
+                };
+
+                _context.Bookings.Add(booking);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                await _auditService.LogAsync(userId, "Booking", $"Booking created for room {roomId}, check-in {checkIn:yyyy-MM-dd}");
+
+                return booking;
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
 
         public decimal CalculateCancellationFee(Booking booking)

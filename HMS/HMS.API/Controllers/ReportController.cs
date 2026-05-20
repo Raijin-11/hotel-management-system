@@ -8,7 +8,6 @@ namespace HMS.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Manager,Admin")]
     public class ReportController : ControllerBase
     {
         private readonly ReportService _reportService;
@@ -19,6 +18,7 @@ namespace HMS.API.Controllers
         }
 
         [HttpGet("occupancy")]
+        [Authorize(Roles = "Manager,Admin")]
         public async Task<IActionResult> Occupancy([FromQuery] DateTime from, [FromQuery] DateTime to)
         {
             var report = await _reportService.GetOccupancyReportAsync(from, to);
@@ -26,6 +26,7 @@ namespace HMS.API.Controllers
         }
 
         [HttpGet("revenue")]
+        [Authorize(Roles = "Manager,Admin")]
         public async Task<IActionResult> Revenue([FromQuery] DateTime from, [FromQuery] DateTime to)
         {
             var report = await _reportService.GetRevenueReportAsync(from, to);

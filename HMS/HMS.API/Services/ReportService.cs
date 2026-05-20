@@ -17,24 +17,50 @@ namespace HMS.API.Services
         public async Task<object> GetOccupancyReportAsync(DateTime from, DateTime to)
         {
             var totalRooms = await _context.Rooms.CountAsync();
+            var totalNights = Math.Max(1, (to - from).Days);
 
-            var occupiedBookings = await _context.Bookings
+            // Bookings that overlap the date range (excluding cancelled)
+            var bookings = await _context.Bookings
+                .Include(b => b.Room)
+                .ThenInclude(r => r.Hotel)
                 .Where(b => b.Status != "Cancelled" &&
-                            b.CheckInDate >= from &&
-                            b.CheckOutDate <= to)
-                .CountAsync();
+                            b.CheckInDate < to &&
+                            b.CheckOutDate > from)
+                .ToListAsync();
 
-            var occupancyRate = totalRooms > 0
-                ? Math.Round((double)occupiedBookings / totalRooms * 100, 2)
+            // Compute room-nights per booking, clamped to the report range
+            var bookingsWithNights = bookings.Select(b =>
+            {
+                var effectiveStart = b.CheckInDate > from ? b.CheckInDate : from;
+                var effectiveEnd = b.CheckOutDate < to ? b.CheckOutDate : to;
+                var nights = Math.Max(0, (int)(effectiveEnd - effectiveStart).TotalDays);
+                return new
+                {
+                    b.Id,
+                    RoomNumber = b.Room.RoomNumber,
+                    HotelName = b.Room.Hotel.Name,
+                    b.CheckInDate,
+                    b.CheckOutDate,
+                    Nights = nights,
+                    b.Status
+                };
+            }).ToList();
+
+            var occupiedRoomNights = bookingsWithNights.Sum(b => b.Nights);
+            var totalPossibleRoomNights = totalRooms * totalNights;
+            var occupancyRate = totalPossibleRoomNights > 0
+                ? Math.Round((double)occupiedRoomNights / totalPossibleRoomNights * 100, 2)
                 : 0;
 
             return new
             {
                 TotalRooms = totalRooms,
-                OccupiedBookings = occupiedBookings,
+                OccupiedBookings = occupiedRoomNights,
                 OccupancyRate = occupancyRate,
+                TotalPossibleRoomNights = totalPossibleRoomNights,
                 From = from,
-                To = to
+                To = to,
+                Bookings = bookingsWithNights
             };
         }
 
@@ -72,20 +98,27 @@ namespace HMS.API.Services
             var today = DateTime.UtcNow.Date;
 
             var totalBookings = await _context.Bookings.CountAsync();
-            var activeGuests = await _context.Bookings.CountAsync(b => b.Status == "CheckedIn");
+            var activeBookings = await _context.Bookings.CountAsync(b => b.Status == "CheckedIn");
             var todayArrivals = await _context.Bookings.CountAsync(b => b.CheckInDate.Date == today && b.Status == "Confirmed");
             var todayDepartures = await _context.Bookings.CountAsync(b => b.CheckOutDate.Date == today && b.Status == "CheckedIn");
+            var totalRooms = await _context.Rooms.CountAsync();
             var availableRooms = await _context.Rooms.CountAsync(r => r.Status == "Available");
+            var occupiedRooms = await _context.Rooms.CountAsync(r => r.Status == "Occupied");
             var totalRevenue = await _context.Payments.SumAsync(p => (decimal?)p.Amount) ?? 0;
+            var occupancyRate = totalRooms > 0
+                ? Math.Round((double)occupiedRooms / totalRooms * 100, 1)
+                : 0;
 
             return new
             {
                 TotalBookings = totalBookings,
-                ActiveGuests = activeGuests,
+                ActiveBookings = activeBookings,
                 TodayArrivals = todayArrivals,
                 TodayDepartures = todayDepartures,
                 AvailableRooms = availableRooms,
-                TotalRevenue = totalRevenue
+                TotalRooms = totalRooms,
+                TotalRevenue = totalRevenue,
+                OccupancyRate = occupancyRate
             };
         }
     }

@@ -64,13 +64,13 @@ namespace HMS.API.Controllers
 
         [HttpPatch("{id}/status")]
         [Authorize(Roles = "Staff,Manager,Admin")]
-        public async Task<IActionResult> UpdateStatus(int id, [FromBody] string status)
+        public async Task<IActionResult> UpdateStatus(int id, [FromBody] UpdateRoomStatusDTO dto)
         {
             var validStatuses = new[] { "Available", "Occupied", "Cleaning", "OutOfService" };
-            if (!validStatuses.Contains(status))
+            if (!validStatuses.Contains(dto.Status))
                 return BadRequest(new { message = "Invalid status." });
 
-            await _roomService.UpdateRoomStatusAsync(id, status);
+            await _roomService.UpdateRoomStatusAsync(id, dto.Status);
             return Ok(new { message = "Room status updated." });
         }
     }

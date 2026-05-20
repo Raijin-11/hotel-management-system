@@ -198,6 +198,7 @@ import { Booking, Room, DashboardStats } from '../../models/models';
                   <select class="form-control" style="width:140px;padding:6px 10px;font-size:13px"
                           [(ngModel)]="room.status" (change)="updateRoomStatus(room)">
                     <option>Available</option>
+                    <option>Occupied</option>
                     <option>Cleaning</option>
                     <option>OutOfService</option>
                   </select>

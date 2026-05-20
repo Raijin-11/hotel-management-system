@@ -44,4 +44,9 @@ namespace HMS.API.DTOs
         public decimal Amount { get; set; }
         public string PaymentMethod { get; set; } = string.Empty;
     }
+
+    public class UpdateRoomStatusDTO
+    {
+        public string Status { get; set; } = string.Empty;
+    }
 }

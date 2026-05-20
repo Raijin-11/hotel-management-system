@@ -19,7 +19,7 @@ namespace HMS.API.Services
         {
             var query = _context.Rooms
                 .Include(r => r.Hotel)
-                .Where(r => r.Status == "Available");
+                .Where(r => r.Status != "OutOfService");
 
             if (hotelId.HasValue)
                 query = query.Where(r => r.HotelId == hotelId.Value);
@@ -52,6 +52,16 @@ namespace HMS.API.Services
         public decimal GetPricePerNight(Room room, DateTime checkIn)
         {
             return IsPeakSeason(checkIn) ? room.PricePerNightPeak : room.PricePerNightOffPeak;
+        }
+
+        public decimal CalculateTotalPrice(Room room, DateTime checkIn, DateTime checkOut)
+        {
+            var total = 0m;
+            for (var date = checkIn; date < checkOut; date = date.AddDays(1))
+            {
+                total += IsPeakSeason(date) ? room.PricePerNightPeak : room.PricePerNightOffPeak;
+            }
+            return total;
         }
 
         public async Task<Room?> GetRoomByIdAsync(int id)

@@ -204,10 +204,14 @@ export class BookingComponent implements OnInit {
     const checkOut = new Date(this.checkOutDate);
     this.totalNights = Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24));
     if (this.totalNights <= 0) { this.totalNights = 0; return; }
-    const month = checkIn.getMonth() + 1;
-    const isPeak = [6, 7, 8, 12].includes(month);
-    this.estimatedPrice = isPeak ? this.room.pricePerNightPeak : this.room.pricePerNightOffPeak;
-    this.totalPrice = this.estimatedPrice * this.totalNights;
+    let total = 0;
+    const peakMonths = [6, 7, 8, 12];
+    for (let d = new Date(checkIn); d < checkOut; d.setDate(d.getDate() + 1)) {
+      const isPeak = peakMonths.includes(d.getMonth() + 1);
+      total += isPeak ? this.room.pricePerNightPeak : this.room.pricePerNightOffPeak;
+    }
+    this.totalPrice = total;
+    this.estimatedPrice = Math.round(total / this.totalNights);
   }
 
   getRoomClass(type: string): string {
